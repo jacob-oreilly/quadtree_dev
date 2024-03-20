@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Debug)]
 pub struct Point {
     pub(crate) x: f32,
     pub(crate) y: f32,
@@ -11,6 +12,12 @@ impl Point {
             x: x,
             y: y,
         }
+    }
+}
+
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Point {:?}", vec![self.x, self.y])
     }
 }
 
@@ -57,11 +64,18 @@ impl QuadTree {
         if self.points.len() < self.capacity {
             self.points.push(point);
         }
+        else {
+            QuadTree::subdivide();
+        }
+    }
+
+    pub fn subdivide() {
+        println!("We subdivide here");
     }
 }
 
 impl fmt::Display for QuadTree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "QuadTree: {}", self.boundary.to_string())
+        writeln!(f, "QuadTree: {:?} {:?} {:?}", self.boundary.to_string(), self.capacity, self.points)
     }
 }

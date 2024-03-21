@@ -48,7 +48,8 @@ impl fmt::Display for Rectangle {
 pub struct QuadTree {
     pub(crate) boundary: Rectangle,
     pub(crate) capacity: usize,
-    pub(crate) points: Vec<Point>
+    pub(crate) points: Vec<Point>,
+    pub(crate) divided: bool
 }
 
 impl QuadTree {
@@ -56,7 +57,8 @@ impl QuadTree {
         QuadTree {
             boundary: boundary,
             capacity: capacity,
-            points: vec![]    
+            points: vec![],
+            divided: false,  
         }
     }
 
@@ -65,12 +67,25 @@ impl QuadTree {
             self.points.push(point);
         }
         else {
-            QuadTree::subdivide();
+            if !self.divided {
+                self.subdivide();
+                self.divided = true;
+            }
         }
     }
 
-    pub fn subdivide() {
-        println!("We subdivide here");
+    pub fn subdivide(&mut self) {
+        let tl_rec = Rectangle::new(self.boundary.x - self.boundary.w/2.0, self.boundary.y + self.boundary.h/2.0, self.boundary.w/2.0, self.boundary.h/2.0);
+        let top_left = QuadTree::new(tl_rec, 0);
+
+        let bl_rec = Rectangle::new(self.boundary.x + self.boundary.w/2.0, self.boundary.y + self.boundary.h/2.0, self.boundary.w/2.0, self.boundary.h/2.0);
+        let bottom_left = QuadTree::new(bl_rec, 0);
+
+        let tr_rec = Rectangle::new(self.boundary.x - self.boundary.w/2.0, self.boundary.y - self.boundary.h/2.0, self.boundary.w/2.0, self.boundary.h/2.0);
+        let top_right = QuadTree::new(tr_rec, 0);
+
+        let br_rec = Rectangle::new(self.boundary.x + self.boundary.w/2.0, self.boundary.y - self.boundary.h/2.0, self.boundary.w/2.0, self.boundary.h/2.0);
+        let bottom_right = QuadTree::new(br_rec, 0);
     }
 }
 
